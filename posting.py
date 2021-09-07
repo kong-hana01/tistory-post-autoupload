@@ -47,17 +47,19 @@ def post_upload(algorithm, problem, token):
     request = requests.get(url)
     html = request.text
     soup = BeautifulSoup(html, 'html.parser')
-    descript_ = write2(soup.select('#problem_description > p'))
-    input_ = write2(soup.select('#problem_input > p'))
-    output_ = write2(soup.select('#problem_output > p'))
-    sample_input_ = create_table(soup.select('#sample-input-1')[0].text)
-    sample_output_ = create_table(soup.select('#sample-output-1')[0].text)
+    # descript_ = write2(soup.select('#problem_description > p'))
+    # input_ = write2(soup.select('#problem_input > p'))
+    # output_ = write2(soup.select('#problem_output > p'))
+    # sample_input_ = create_table(soup.select('#sample-input-1')[0].text)
+    # sample_output_ = create_table(soup.select('#sample-output-1')[0].text)
+    problem_ = soup.select('#problem-body')[0]
     code_ = create_code(''.join(data))
+    
     
     # 코드 정보 재구조화
     i = 1
     approach = ''
-    while '#' in data[i]:
+    while i < len(data) and '#' in data[i]:
         if '접근' in data[i]:
             i += 1
             continue
@@ -66,8 +68,9 @@ def post_upload(algorithm, problem, token):
     approach = size16(approach)
 
 
-    content = size18('문제') + url + '<br>' + size18('문제 정의') + descript_ + '<br>' + size18('입력') + input_ + '<br>' + size18('출력') +  output_ + '<br>' + \
-        size18('예제 입력 1') + sample_input_ + '<br>' + size18('예제 출력 1') + sample_output_ + '<br>' + size18('접근 방법') + approach + size18('코드') + code_
+    # content = size18('문제') + url + '<br>' + size18('문제 정의') + descript_ + '<br>' + size18('입력') + input_ + '<br>' + size18('출력') +  output_ + '<br>' + \
+    #     size18('예제 입력 1') + sample_input_ + '<br>' + size18('예제 출력 1') + sample_output_ + '<br>' + size18('접근 방법') + approach + size18('코드') + code_
+    content = str(problem_) + '\n' + size18('접근 방법') + approach + size18('코드') + code_
     problem_number = url.split('/')[-1]
     title = f'백준 온라인 저지, {algorithm} / {problem_number}번: {problem} (파이썬 / 백준 골드문제)'
     blog_name = 'konghana01'
@@ -76,7 +79,7 @@ def post_upload(algorithm, problem, token):
     
     # 글 올리기 전 점검
     print(content)
-    if input('내용을 수정하고 싶으면 "r"을 누르세요.') == 'r':
+    if input('내용을 수정하고 싶으면 "r"을 누르세요.') in ['r', 'ㄱ']:
         return
     write = {'access_token': token['access_token'], 'output': 'json', 'blogName': blog_name, 
     'title': title, 'content': content, 'visibility': visibility, 'category': category[algorithm], 'tag': tag}
