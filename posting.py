@@ -25,7 +25,7 @@ def write2(soup):
         string = string + x.text + '<br>'
     return size16(string)
 
-def post_upload(algorithm, problem, token):
+def post_upload(algorithm, problem, token, flag):
 
     # 파이썬 파일 불러오기
     with open(f"C:/Users/최진만/Project/algorithm/{algorithm}/{problem}.py", "r", encoding="utf-8") as f:
@@ -72,10 +72,23 @@ def post_upload(algorithm, problem, token):
     #     size18('예제 입력 1') + sample_input_ + '<br>' + size18('예제 출력 1') + sample_output_ + '<br>' + size18('접근 방법') + approach + size18('코드') + code_
     content = str(problem_) + '\n' + size18('접근 방법') + approach + size18('코드') + code_
     problem_number = url.split('/')[-1]
-    title = f'백준 온라인 저지, {algorithm} / {problem_number}번: {problem} (파이썬 / 백준 골드문제)'
+    option = ''
+    for x in flag:
+        if x == '0':
+            option = option + ", " + '백준 브론즈문제'
+        elif x == '1':
+            option = option + ", " + '백준 실버문제'
+        elif x == '2':
+            option = option + ", " + '백준 골드문제'
+        elif x == '3':
+            option = option + ", " + '백준 플레티넘문제'
+        elif x == '4':
+            option = option + ", " + '삼성 SW 기출문제'
+
+    title = f'백준 온라인 저지, {algorithm} / {problem_number}번: {problem} (파이썬 / {option})'
     blog_name = 'konghana01'
     visibility = 3 # 0: 비공개 - 기본값, 1: 보호, 3: 발행
-    tag = f'백준 알고리즘, 파이썬 코딩 테스트, {algorithm}, {problem}, 백준 온라인 저지, 파이썬, 코딩 공부, 백준 골드문제'
+    tag = f'백준 알고리즘, 파이썬 코딩 테스트, {algorithm}, {problem}, 백준 온라인 저지, 파이썬, 코딩 공부, {option}'
     
     # 글 올리기 전 점검
     print(content)
@@ -107,4 +120,5 @@ if __name__ == '__main__':
     # category_search(token)
     algorithm = input('알고리즘을 입력하세요.')
     problem = input('문제 이름을 입력하세요.')
-    post_upload(algorithm, problem, token)
+    flag = input('옵션을 입력하세요.(옵션별 공백 기준) \n브론즈문제: 0, 실버문제: 1, 골드문제: 2, 플레티넘문제: 3, 삼성SW기출문제: 4\n').split()
+    post_upload(algorithm, problem, token,flag)
